@@ -1,3 +1,6 @@
+console.log('🚀 CONFIG.JS LOADED - NEW VERSION');
+console.log('🚀 Current timestamp:', new Date().toISOString());
+
 // Railway 환경변수 강제 로딩 (dotenv는 개발환경에서만)
 try {
   if (process.env.NODE_ENV !== 'production') {
@@ -7,6 +10,12 @@ try {
   console.log('⚠️ dotenv not loaded (this is normal in production)');
 }
 
+// 모든 환경변수 확인
+console.log('🔍 ALL ENVIRONMENT VARIABLES:');
+console.log('Total env vars:', Object.keys(process.env).length);
+console.log('DB related vars:', Object.keys(process.env).filter(key => key.includes('DB')));
+console.log('All env keys (first 20):', Object.keys(process.env).slice(0, 20));
+
 // Railway 환경변수 직접 접근
 const dbHost = process.env.DB_HOST;
 const dbUsername = process.env.DB_USERNAME;
@@ -15,19 +24,28 @@ const dbName = process.env.DB_NAME;
 const nodeEnv = process.env.NODE_ENV;
 
 // 디버깅을 위한 환경변수 로깅
-console.log('🔍 Environment variables check:');
+console.log('🔍 CRITICAL Environment variables check:');
 console.log('NODE_ENV:', nodeEnv);
 console.log('DB_HOST:', dbHost);
 console.log('DB_USERNAME:', dbUsername);
 console.log('DB_NAME:', dbName);
-console.log('All env keys:', Object.keys(process.env).filter(key => key.startsWith('DB_')));
+console.log('DB_PASSWORD exists:', !!dbPassword);
 
-// 환경변수 검증
+// 🚨 강력한 환경변수 검증 - 없으면 즉시 종료
 if (!dbHost || !dbUsername || !dbPassword || !dbName) {
-  console.error('❌ Missing required environment variables!');
+  console.error('💥 FATAL ERROR: Missing required environment variables!');
   console.error('Required: DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME');
-  console.error('Current values:', { dbHost, dbUsername, dbName, dbPassword: dbPassword ? '***set***' : 'undefined' });
+  console.error('Current values:', { 
+    dbHost: dbHost || 'MISSING', 
+    dbUsername: dbUsername || 'MISSING', 
+    dbName: dbName || 'MISSING', 
+    dbPassword: dbPassword ? 'SET' : 'MISSING' 
+  });
+  console.error('💥 APPLICATION WILL EXIT NOW');
+  process.exit(1); // 강제 종료
 }
+
+console.log('✅ All environment variables are present!');
 
 // 동적 DB 설정을 위한 함수 (더 직접적인 방식)
 const getDatabaseConfig = (surveyType = 'v1') => {
