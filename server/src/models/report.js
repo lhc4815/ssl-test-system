@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     school: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255), // 길이 확장
       allowNull: false
     },
     grade: {
@@ -37,11 +37,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     gender: {
-      type: DataTypes.STRING(50),
-      allowNull: true // Assuming these new fields can be null initially
+      type: DataTypes.STRING(255), // 길이 확장
+      allowNull: true
     },
     region: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255), // 길이 확장
       allowNull: true
     },
     b_grade_subjects_count: {
@@ -49,16 +49,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     desired_high_school: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255), // 길이 확장
       allowNull: true
     },
     student_phone: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(255), // 길이 확장
       allowNull: true,
       comment: '학생 연락처'
     },
     parent_phone: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(255), // 길이 확장
       allowNull: true,
       comment: '학부모 연락처'
     },
