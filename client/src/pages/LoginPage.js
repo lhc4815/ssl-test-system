@@ -13,8 +13,8 @@ function LoginPage() {
   // 검사 타입 목록 (현재 지원되는 것만 활성화)
   const surveyOptions = [
     { value: 'v1', label: '고교선택적성검사', database: 'SSL-survey-v1', available: true },
-    { value: 'v2', label: '대학진학적성검사 (준비중)', database: 'SSL-survey-v2', available: false },
-    { value: 'v3', label: '직업선택적성검사 (준비중)', database: 'SSL-survey-v3', available: false }
+    { value: 'v2', label: '대학진학적성검사', database: 'SSL-survey-v2', available: false },
+    { value: 'v3', label: '직업선택적성검사', database: 'SSL-survey-v3', available: false }
   ];
 
   const handleSubmit = async (e) => {
