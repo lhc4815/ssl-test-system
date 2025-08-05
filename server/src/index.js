@@ -429,8 +429,8 @@ app.post('/api/test/complete', async (req, res) => {
     // Use dynamic models for database operations
     const dynamicModels = req.dynamicModels;
     
-    // Mark the code as used (this is global, so use static models)
-    await models.Code.update(
+    // Mark the code as used (use dynamic models for consistency with surveyType)
+    await dynamicModels.Code.update(
       { is_used: true },
       { where: { code_value: user_code } }
     );
@@ -467,7 +467,7 @@ app.post('/api/test/complete', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error completing test:', error);
+    console.error('Detailed error on complete:', error.original || error);
     res.status(500).json({ message: 'An error occurred while completing the test.' });
   }
 });
@@ -640,7 +640,7 @@ app.post('/api/admin/jump-to-phase', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error in admin jump-to-phase:', error);
+    console.error('Detailed error in admin jump-to-phase:', error.original || error);
     res.status(500).json({ message: 'An error occurred while processing admin request.' });
   }
 });
