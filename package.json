@@ -1,0 +1,21 @@
+{
+  "name": "ssl-test-system",
+  "version": "1.0.0",
+  "description": "SSL 학업적성검사 시스템 v2",
+  "main": "server/src/index.js",
+  "scripts": {
+    "build": "cd client && npm install && npm run build",
+    "start": "cd server && npm install && node src/index.js",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["react", "node", "express", "mysql", "aptitude-test"],
+  "author": "SSL Test Team",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

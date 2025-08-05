@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the 'public' directory using absolute path
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Test route to get all problems from Type A
 app.get('/api/problems/a', async (req, res) => {
@@ -134,7 +134,7 @@ app.get('/api/test/question/:type/:number', async (req, res) => {
           question_type: upperType,
           is_block: true, // Flag to indicate this is a block of questions
           common_passage: questionsB[0].common_passage, // Use common passage from Q8
-          image_url: `http://localhost:${port}/images/typeB/Table_I.jpg`,
+          image_url: `/images/typeB/Table_I.jpg`,
           questions: questionsB.map(q => {
             const { correct_answer, common_passage, ...qData } = q.toJSON();
             return qData;
@@ -166,7 +166,7 @@ app.get('/api/test/question/:type/:number', async (req, res) => {
         return res.json({
           ...questionData,
           question_type: upperType,
-          image_url: `http://localhost:${port}/images/typeC/Q${questionNumber}.jpg`
+          image_url: `/images/typeC/Q${questionNumber}.jpg`
         });
       } else if (questionNumber === 8) {
         // For Q8, return Q8-Q10 as a block with common images
@@ -183,14 +183,14 @@ app.get('/api/test/question/:type/:number', async (req, res) => {
           question_type: upperType,
           is_block: true, // Flag to indicate this is a block of questions
           common_images: [
-            `http://localhost:${port}/images/typeC/P1.jpg`,
-            `http://localhost:${port}/images/typeC/P2.jpg`
+            `/images/typeC/P1.jpg`,
+            `/images/typeC/P2.jpg`
           ],
           questions: questionsC.map(q => {
             const { correct_answer, ...qData } = q.toJSON();
             return {
               ...qData,
-              image_url: `http://localhost:${port}/images/typeC/Q${q.problem_number}.jpg`
+              image_url: `/images/typeC/Q${q.problem_number}.jpg`
             };
           })
         };
@@ -210,7 +210,7 @@ app.get('/api/test/question/:type/:number', async (req, res) => {
     // If it's a Type C question, add the image URL
     if (upperType === 'C') { // This block is now redundant for Type C, but kept for other types if logic changes
       // Construct the full URL for the image
-      questionData.image_url = `http://localhost:${port}/images/typeC/Q${questionNumber}.jpg`; // Assuming image names are Q1.jpg, Q2.jpg, etc.
+      questionData.image_url = `/images/typeC/Q${questionNumber}.jpg`; // Assuming image names are Q1.jpg, Q2.jpg, etc.
     }
 
     res.json({
