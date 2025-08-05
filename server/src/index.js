@@ -487,12 +487,34 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     // Check if it's the admin code
     if (code === 'ADM0000') {
-      // Admin login always succeeds for testing purposes
+      // Admin login always succeeds for testing purposes (but still need valid surveyType)
+      try {
+        // Test if the dynamic DB exists for this surveyType
+        const testConnection = req.dynamicModels;
+        if (!testConnection) {
+          return res.status(400).json({ 
+            message: '선택하신 검사 유형이 존재하지 않습니다. 다른 검사 유형을 선택해주세요.' 
+          });
+        }
+      } catch (dbError) {
+        console.error('DB connection error for surveyType:', surveyType, dbError);
+        return res.status(400).json({ 
+          message: '선택하신 검사 유형이 존재하지 않습니다. 다른 검사 유형을 선택해주세요.' 
+        });
+      }
       return res.status(200).json({ message: 'Admin login successful!', isAdmin: true });
     }
 
-    // For regular users, check if the code exists and is not used
-    const foundCode = await models.Code.findOne({ where: { code_value: code } });
+    // For regular users, check if the code exists and is not used using dynamic models
+    let foundCode;
+    try {
+      foundCode = await req.dynamicModels.Code.findOne({ where: { code_value: code } });
+    } catch (dbError) {
+      console.error('Database connection error for surveyType:', surveyType, dbError);
+      return res.status(400).json({ 
+        message: '선택하신 검사 유형이 존재하지 않습니다. 다른 검사 유형을 선택해주세요.' 
+      });
+    }
 
     if (!foundCode) {
       return res.status(401).json({ message: 'Invalid code.' });
