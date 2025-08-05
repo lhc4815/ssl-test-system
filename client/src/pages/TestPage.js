@@ -146,7 +146,7 @@ function TestPage() {
     } catch (err) {
       console.error('🔥 Network error saving answer(s):', err);
     }
-  }, [userCode, currentPhase, currentQuestion, questionData]);
+  }, [userCode, currentPhase, currentQuestion, questionData, surveyType]);
 
   // Move to next question - simplified version
   const moveToNextQuestion = useCallback(async (shouldSaveAnswer = true, answersToSave = null) => {
@@ -257,7 +257,7 @@ function TestPage() {
     setSelectedAnswer(currentPhase === 'C' ? {} : ''); // Reset to empty object for Type C, or empty string for A/B
     setTimeLeft(INITIAL_TIME_LIMITS[currentPhase]); // Set time based on current phase
     // Don't reset isAnswerSelected here - it will be reset when new question loads
-  }, [currentPhase, currentQuestion, selectedAnswer, saveAnswer, userCode, navigate, INITIAL_TIME_LIMITS, QUESTION_LIMITS]);
+  }, [currentPhase, currentQuestion, selectedAnswer, saveAnswer, userCode, navigate, INITIAL_TIME_LIMITS, QUESTION_LIMITS, surveyType, questionData]);
 
   // Handle answer selection
   const handleAnswerSelect = useCallback(async (questionNum, answer) => { // Now accepts questionNum for Type C
