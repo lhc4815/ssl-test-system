@@ -10,11 +10,11 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 검사 타입 목록
+  // 검사 타입 목록 (현재 지원되는 것만 활성화)
   const surveyOptions = [
-    { value: 'v1', label: '고교선택적성검사', database: 'SSL-survey-v1' },
-    { value: 'v2', label: '대학진학적성검사', database: 'SSL-survey-v2' },
-    { value: 'v3', label: '직업선택적성검사', database: 'SSL-survey-v3' }
+    { value: 'v1', label: '고교선택적성검사', database: 'SSL-survey-v1', available: true },
+    { value: 'v2', label: '대학진학적성검사 (준비중)', database: 'SSL-survey-v2', available: false },
+    { value: 'v3', label: '직업선택적성검사 (준비중)', database: 'SSL-survey-v3', available: false }
   ];
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,15 @@ function LoginPage() {
     setError('');
     setIsLoading(true);
 
-    console.log('🚀 Login form submitted with:', { name, code });
+    // 클라이언트 쪽에서 먼저 survey type 검증
+    const selectedOption = surveyOptions.find(opt => opt.value === surveyType);
+    if (!selectedOption || !selectedOption.available) {
+      setError('선택하신 검사 유형은 아직 준비중입니다. 고교선택적성검사를 선택해주세요.');
+      setIsLoading(false);
+      return;
+    }
+
+    console.log('🚀 Login form submitted with:', { name, code, surveyType });
 
     try {
       console.log('📡 Sending login request to /api/auth/login');

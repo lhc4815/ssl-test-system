@@ -47,10 +47,27 @@ if (!dbHost || !dbUsername || !dbPassword || !dbName) {
 
 console.log('✅ All environment variables are present!');
 
-// 동적 DB 설정을 위한 함수 (더 직접적인 방식)
+// 동적 DB 설정을 위한 함수 (surveyType별 검증 포함)
 const getDatabaseConfig = (surveyType = 'v1') => {
-  // surveyType 접미사 제거 - Railway에서 직접 전체 DB명 설정
-  const databaseName = dbName || 'SSL-survey-v1';
+  console.log(`🔍 Requesting database config for surveyType: ${surveyType}`);
+  
+  // 현재 지원되는 surveyType 목록
+  const supportedSurveyTypes = ['v1'];
+  
+  if (!supportedSurveyTypes.includes(surveyType)) {
+    console.error(`❌ Unsupported surveyType: ${surveyType}. Supported types: ${supportedSurveyTypes.join(', ')}`);
+    throw new Error(`검사 유형 '${surveyType}'은 아직 준비되지 않았습니다. 현재 이용 가능한 검사 유형: ${supportedSurveyTypes.join(', ')}`);
+  }
+  
+  // surveyType에 따른 데이터베이스 이름 생성
+  const databaseName = `SSL-survey-${surveyType}`;
+  
+  // 환경변수의 DB_NAME과 비교하여 일치하는지 확인
+  const envDbName = dbName || 'SSL-survey-v1';
+  if (databaseName !== envDbName) {
+    console.error(`❌ Database mismatch: requested '${databaseName}' but environment has '${envDbName}'`);
+    throw new Error(`요청된 검사 유형 '${surveyType}'에 해당하는 데이터베이스가 설정되지 않았습니다.`);
+  }
   
   const config = {
     username: dbUsername || "username",
