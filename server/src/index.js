@@ -30,11 +30,6 @@ app.use(express.static(path.join(__dirname, '../../client/build')));
 // Serve images from public directory
 app.use('/images', express.static(path.join(__dirname, '../../public/images')));
 
-// Root route handler - redirect to React app
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
-});
-
 // Test route to get all problems from Type A
 app.get('/api/problems/a', async (req, res) => {
   try {
