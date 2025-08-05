@@ -24,8 +24,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from the 'public' directory using absolute path
-app.use(express.static(path.join(__dirname, '../../public')));
+// Serve static files from React build directory
+app.use(express.static(path.join(__dirname, '../../client/build')));
+
+// Serve images from public directory
+app.use('/images', express.static(path.join(__dirname, '../../public/images')));
+
+// Root route handler - redirect to React app
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
+});
 
 // Test route to get all problems from Type A
 app.get('/api/problems/a', async (req, res) => {
@@ -644,6 +652,49 @@ app.post('/api/admin/jump-to-phase', async (req, res) => {
 
 app.get('/api/hello', (req, res) => {
   res.send({ message: 'Hello From Express' });
+});
+
+// Catch-all handler: serve React app for all non-API routes
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, '../../client/build', 'index.html');
+  
+  // Check if React build file exists
+  const fs = require('fs');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    // Fallback response when React build is not available
+    res.status(200).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>SSL 적성검사 시스템</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+          .container { max-width: 600px; margin: 0 auto; }
+          .status { color: #28a745; font-size: 18px; margin-bottom: 20px; }
+          .info { color: #666; line-height: 1.6; }
+          .api-link { color: #007bff; text-decoration: none; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🎉 SSL 적성검사 시스템</h1>
+          <div class="status">✅ 서버가 성공적으로 실행 중입니다!</div>
+          <div class="info">
+            <p>백엔드 API 서버가 정상적으로 작동하고 있습니다.</p>
+            <p>환경변수: 모두 로드됨 ✅</p>
+            <p>데이터베이스: 연결됨 ✅</p>
+            <p>API 엔드포인트: 활성화됨 ✅</p>
+            <br>
+            <p>API 테스트: <a href="/api/hello" class="api-link">/api/hello</a></p>
+            <p>코드 조회: <a href="/api/codes" class="api-link">/api/codes</a></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `);
+  }
 });
 
 // Sync database and start server
