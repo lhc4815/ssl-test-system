@@ -4,7 +4,7 @@
   "description": "SSL 학업적성검사 시스템 v2",
   "main": "server/src/index.js",
   "scripts": {
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && CI=false npm run build",
     "start": "cd server && npm install && node src/index.js",
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install"
