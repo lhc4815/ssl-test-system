@@ -1,4 +1,4 @@
-const models = require('../lib/models');
+const models = require('../../lib/models');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
