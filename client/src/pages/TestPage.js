@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
@@ -15,19 +15,19 @@ function TestPage() {
   const navigate = useNavigate();
 
   // Question limits for each phase
-  const QUESTION_LIMITS = {
+  const QUESTION_LIMITS = useMemo(() => ({
     'A': 240,
     'B': 10,
     'C': 10 // For Type C, this is the number of questions in the block (Q1-Q10)
-  };
+  }), []);
 
   // Time limits for each phase (in seconds)
-  const INITIAL_TIME_LIMITS = {
+  const INITIAL_TIME_LIMITS = useMemo(() => ({
     'A': 10,
     'B': 120, // 2 minutes for Type B block (Q8-Q9)
     'C_INDIVIDUAL': 240, // 4 minutes for Q1-Q7 individual questions
     'C_BLOCK': 720 // 12 minutes for Q8-Q10 block
-  };
+  }), []);
 
   // Get user code and survey type from session storage
   const userCode = sessionStorage.getItem('userCode');
@@ -95,7 +95,7 @@ function TestPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [INITIAL_TIME_LIMITS, surveyType]);
 
   // Save answer to server
   const saveAnswer = useCallback(async (answersToSave) => { // Now accepts a single answer (A/B) or an object (C)
@@ -146,7 +146,7 @@ function TestPage() {
     } catch (err) {
       console.error('🔥 Network error saving answer(s):', err);
     }
-  }, [userCode, currentPhase, currentQuestion, questionData]);
+  }, [userCode, currentPhase, currentQuestion, questionData, surveyType]);
 
   // Move to next question - simplified version
   const moveToNextQuestion = useCallback(async (shouldSaveAnswer = true, answersToSave = null) => {
