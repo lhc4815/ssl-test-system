@@ -74,7 +74,7 @@ app.post('/api/user/info', async (req, res) => {
       desired_high_school: desired_high_school,
       student_phone: student_phone,
       parent_phone: parent_phone,
-      score: 0 // Initial score, will be updated after test completion
+      // score: 0 // Initial score, will be updated after test completion - REMOVED
     });
 
     res.status(200).json({ 
@@ -455,7 +455,8 @@ app.post('/api/test/complete', async (req, res) => {
     });
 
     if (reportEntry) {
-      await reportEntry.update({ score: totalAnswered });
+      // report_v1 테이블에 score 컬럼이 없으므로, score 업데이트 로직 제거
+      // await reportEntry.update({ score: totalAnswered }); 
     } else {
       console.warn(`No report entry found for user_code: ${user_code}. Score not updated.`);
     }
@@ -463,7 +464,7 @@ app.post('/api/test/complete', async (req, res) => {
     res.status(200).json({ 
       message: 'Test completed successfully!',
       totalAnswered: totalAnswered,
-      score: totalAnswered
+      score: totalAnswered // score는 더 이상 DB에 저장되지 않지만, 응답에는 포함
     });
 
   } catch (error) {
@@ -619,17 +620,18 @@ app.post('/api/admin/jump-to-phase', async (req, res) => {
 
     // If completing, also mark code as used and update report
     if (upperPhase === 'COMPLETE') {
-      await models.Code.update(
+      await dynamicModels.Code.update( // dynamicModels 사용
         { is_used: true },
         { where: { code_value: user_code } }
       );
 
-      const reportEntry = await models.ReportV1.findOne({
+      const reportEntry = await dynamicModels.ReportV1.findOne({ // dynamicModels 사용
         where: { user_code: user_code }
       });
 
       if (reportEntry) {
-        await reportEntry.update({ score: totalAnswered });
+        // report_v1 테이블에 score 컬럼이 없으므로, score 업데이트 로직 제거
+        // await reportEntry.update({ score: totalAnswered }); 
       }
     }
 
