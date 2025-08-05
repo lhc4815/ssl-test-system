@@ -32,7 +32,6 @@ function WaitingPage() {
     // Check if user is logged in
     const userName = sessionStorage.getItem('userName');
     const userCode = sessionStorage.getItem('userCode');
-    const surveyType = sessionStorage.getItem('surveyType') || 'v1';
     
     if (!userName || !userCode) {
       navigate('/login');
